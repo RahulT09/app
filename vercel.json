@@ -1,0 +1,7 @@
+{
+  "framework": "nextjs",
+  "root": "mandi-frontend-main/mandi-frontend-main",
+  "buildCommand": "cd mandi-frontend-main/mandi-frontend-main && npm install && npm run build",
+  "outputDirectory": "mandi-frontend-main/mandi-frontend-main/.next",
+  "installCommand": "cd mandi-frontend-main/mandi-frontend-main && npm install"
+}

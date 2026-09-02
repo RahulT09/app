@@ -26,6 +26,12 @@ export async function backendFetch<T = unknown>(
   const headers = new Headers(init.headers);
   if (init.cookie) headers.set("cookie", init.cookie);
 
+  // 8-second timeout: Vercel serverless functions hard-timeout at 10s.
+  // Without this, a Render cold-start (30-50s) causes Vercel to silently
+  // return its own NOT_FOUND 404 instead of a graceful empty page.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+
   let res: Response;
   try {
     res = await fetch(`${BACKEND_URL}${path}`, {
@@ -34,15 +40,14 @@ export async function backendFetch<T = unknown>(
       body: init.body,
       cache: "no-store",
       redirect: "manual",
-      // Required by undici when streaming a request body through.
+      signal: controller.signal,
       ...(init.body ? { duplex: "half" as const } : {}),
     });
   } catch (err) {
-    // Backend is unreachable (wrong BACKEND_URL, cold start, network error).
-    // Return a safe empty-body 503 so pages degrade gracefully instead of
-    // crashing the entire server component tree with an unhandled error.
     console.error(`[backend] fetch failed for ${path}:`, err);
     return { status: 503, body: null as unknown as T, setCookies: [] };
+  } finally {
+    clearTimeout(timer);
   }
 
   const setCookies =
