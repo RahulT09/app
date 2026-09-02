@@ -57,8 +57,11 @@ async function userRegisterControl(req, res) {
     //create evrification link
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
 
-    //send email
-    await sendVerificationEmail(user.email, verificationUrl);
+    // Fire-and-forget — a failed email must never crash registration.
+    // The user account is already saved; log the error server-side.
+    sendVerificationEmail(user.email, verificationUrl).catch((err) => {
+      console.error("[email] sendVerificationEmail failed:", err.message);
+    });
 
     // const token = jwt.sign(
     //   { id: user._id, role: user.role },
@@ -284,8 +287,10 @@ async function forgotPasswordControl(req, res) {
     //reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    //send email
-    await sendPasswordResetEmail(user.email, resetUrl);
+    // Fire-and-forget — email failure must never crash this endpoint.
+    sendPasswordResetEmail(user.email, resetUrl).catch((err) => {
+      console.error("[email] sendPasswordResetEmail failed:", err.message);
+    });
 
     return res.status(200).json({
       success: true,
