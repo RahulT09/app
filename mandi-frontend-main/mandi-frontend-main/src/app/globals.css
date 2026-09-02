@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --color-ink: #16213e;
+  --color-paper: #f4f7f3;
+  --color-marigold: #f0a202;
+  --color-forest: #1f6f5c;
+  --color-brick: #c6432d;
+  --color-line: #dde3dc;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-marigold: var(--color-marigold);
+  --color-forest: var(--color-forest);
+  --color-brick: var(--color-brick);
+  --color-line: var(--color-line);
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* visible keyboard focus everywhere, on top of Tailwind's focus-visible utilities */
+:focus-visible {
+  outline: 2px solid var(--color-marigold);
+  outline-offset: 2px;
+}
+
+/* Signature element: die-cut price tag with a punched dot */
+.price-tag {
+  position: relative;
+  clip-path: polygon(10px 0%, 100% 0%, 100% 100%, 10px 100%, 0% 50%);
+  padding-left: 16px;
+}
+
+.price-tag::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.5;
+  transform: translateY(-50%);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
