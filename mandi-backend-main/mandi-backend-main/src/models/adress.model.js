@@ -61,6 +61,9 @@ const addressSchema = new mongoose.Schema(
   },
 );
 
+// Fast per-user address lookups
+addressSchema.index({ user: 1 });
+
 const Address = mongoose.model("Address", addressSchema);
 
 module.exports = Address;

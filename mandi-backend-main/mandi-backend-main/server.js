@@ -6,8 +6,9 @@ async function startServer() {
   try {
     await connectToDB();
 
-    app.listen(3001, () => {
-      console.log("App is listening on port 3001");
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => {
+      console.log(`App is listening on port ${PORT}`);
     });
   } catch (err) {
     console.error("Failed to start server:", err);

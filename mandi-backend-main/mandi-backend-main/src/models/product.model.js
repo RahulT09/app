@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const productSChema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -47,6 +47,13 @@ const productSChema = new mongoose.Schema(
   },
 );
 
-const Product = mongoose.model("Product", productSChema);
+// Compound index: fast category-filtered active-product lookups
+productSchema.index({ category: 1, isActive: 1 });
+// Index for sorting/filtering by price
+productSchema.index({ price: 1 });
+// Full-text search on name and description
+productSchema.index({ name: "text", description: "text" });
+
+const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;

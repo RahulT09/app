@@ -136,6 +136,11 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
+// Fast per-user order history, sorted newest-first
+orderSchema.index({ user: 1, createdAt: -1 });
+// Admin status filtering
+orderSchema.index({ status: 1 });
+
 const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

@@ -21,7 +21,9 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    // Allow both local dev and the deployed Vercel frontend.
+    // FRONTEND_URL must be set in the hosting environment (no trailing slash).
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
   }),
 );

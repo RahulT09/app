@@ -142,10 +142,14 @@ async function userLoginControl(req, res) {
     const token = generateAccessToken(user);
 
     //cookie
+    // In production the Next.js proxy (Vercel) and the API (Render) are on
+    // different domains, so the cookie must be SameSite=None; Secure to
+    // survive the server-to-server hop. Locally we use Lax (no HTTPS needed).
+    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("JWT_TOKEN", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -172,10 +176,11 @@ async function userLoginControl(req, res) {
 //logout
 async function userLogoutControl(req, res) {
   try {
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("JWT_TOKEN", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     return res.status(200).json({
