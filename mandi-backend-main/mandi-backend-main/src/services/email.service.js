@@ -1,12 +1,7 @@
-const resend = require("../config/email");
-
-// Production: EMAIL_FROM must be a verified Resend sender (or onboarding@resend.dev for testing)
-// Local dev:  falls back to EMAIL_USER
-const FROM_ADDRESS = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+const { sendEmail } = require("../config/email");
 
 async function sendVerificationEmail(email, verificationUrl) {
-  const { error } = await resend.emails.send({
-    from: `Mandi Store <${FROM_ADDRESS}>`,
+  await sendEmail({
     to: email,
     subject: "Verify your email — Mandi",
     html: `
@@ -21,12 +16,10 @@ async function sendVerificationEmail(email, verificationUrl) {
       </div>
     `,
   });
-  if (error) throw new Error(error.message ?? JSON.stringify(error));
 }
 
 async function sendPasswordResetEmail(email, resetUrl) {
-  const { error } = await resend.emails.send({
-    from: `Mandi Store <${FROM_ADDRESS}>`,
+  await sendEmail({
     to: email,
     subject: "Reset your password — Mandi",
     html: `
@@ -41,7 +34,6 @@ async function sendPasswordResetEmail(email, resetUrl) {
       </div>
     `,
   });
-  if (error) throw new Error(error.message ?? JSON.stringify(error));
 }
 
 module.exports = {
