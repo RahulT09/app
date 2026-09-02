@@ -26,15 +26,24 @@ export async function backendFetch<T = unknown>(
   const headers = new Headers(init.headers);
   if (init.cookie) headers.set("cookie", init.cookie);
 
-  const res = await fetch(`${BACKEND_URL}${path}`, {
-    method: init.method ?? "GET",
-    headers,
-    body: init.body,
-    cache: "no-store",
-    redirect: "manual",
-    // Required by undici when streaming a request body through.
-    ...(init.body ? { duplex: "half" as const } : {}),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BACKEND_URL}${path}`, {
+      method: init.method ?? "GET",
+      headers,
+      body: init.body,
+      cache: "no-store",
+      redirect: "manual",
+      // Required by undici when streaming a request body through.
+      ...(init.body ? { duplex: "half" as const } : {}),
+    });
+  } catch (err) {
+    // Backend is unreachable (wrong BACKEND_URL, cold start, network error).
+    // Return a safe empty-body 503 so pages degrade gracefully instead of
+    // crashing the entire server component tree with an unhandled error.
+    console.error(`[backend] fetch failed for ${path}:`, err);
+    return { status: 503, body: null as unknown as T, setCookies: [] };
+  }
 
   const setCookies =
     typeof res.headers.getSetCookie === "function"
