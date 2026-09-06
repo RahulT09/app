@@ -60,8 +60,8 @@ async function seedProducts() {
           const uploadResult = await uploadImage(buffer);
           imageUrl = uploadResult.secure_url;
         } catch (imgError) {
-          console.error(`Failed to process image for "${p.title}":`, imgError.message);
-          // We still proceed even if image upload fails
+          console.warn(`Cloudinary upload skipped/failed for "${p.title}", using original thumbnail.`);
+          imageUrl = p.thumbnail;
         }
       }
 

@@ -57,6 +57,16 @@ async function sendEmail({ to, subject, html }) {
       req.end();
     });
   } else {
+    // Local dev — if no Gmail credentials provided, log email contents to console
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+      console.log(`\n================== [DEV EMAIL] ==================`);
+      console.log(`To: ${to}`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Content:\n${html}`);
+      console.log(`=================================================\n`);
+      return;
+    }
+
     // Local dev — nodemailer + Gmail
     const nodemailer = require("nodemailer");
     const transporter = nodemailer.createTransport({

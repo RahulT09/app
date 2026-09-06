@@ -1,0 +1,12 @@
+{
+  "name": "mandi-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix mandi-backend-main/mandi-backend-main run dev",
+    "dev:frontend": "npm --prefix mandi-frontend-main/mandi-frontend-main run dev",
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "seed": "npm --prefix mandi-backend-main/mandi-backend-main run seed",
+    "install:all": "npm --prefix mandi-backend-main/mandi-backend-main install && npm --prefix mandi-frontend-main/mandi-frontend-main install"
+  }
+}
